@@ -1,0 +1,306 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="/img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32"
+        href="/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16"
+        href="/img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/img/favicon/site.webmanifest">
+
+    <link rel="stylesheet" href="css/semantic.min.css">
+
+    <title>RC Crypto System</title>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+    <script src="js/semantic.min.js"></script>
+
+    <style>
+        #mainDiv {
+            padding-top: 1em;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .ui.message {
+            margin: 0 auto !important;
+            text-align: center;
+            width: 25%;
+            margin-top: 1em !important;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="mainDiv">
+        <h2>
+            Welcome xxx
+        </h2>
+        <h3>
+            What would you like to do?
+        </h3>
+
+        <div style="margin-top: 1em;">
+            <div class="ui large input" id="old_password_div">
+                <input type="password" placeholder="Old Password" id="old_password" name="old_password">
+            </div>
+
+            <label for="answer_1" class="forgotPwdClass" style="display: none;">Name of your first pet</label>
+            <div class="ui large input forgotPwdClass" style="margin-left: 0.5em; display: none;">
+                <input type="text" placeholder="Answer 1" id="answer_1" name="answer_1">
+            </div>
+
+            <label for="answer_1" class="forgotPwdClass" style="display: none; margin-left: 0.5em;">Your mother's maiden
+                name</label>
+            <div class="ui large input forgotPwdClass" style="margin-left: 0.5em; display: none;">
+                <input type="text" placeholder="Answer 2" id="answer_2" name="answer_2">
+            </div>
+
+            <div class="ui large input" style="margin-left: 1em;">
+                <input type="password" placeholder="New Password" id="new_password" name="new_password">
+            </div>
+
+            <div class="ui checkbox" id="showPwd" style="margin-top: 1em; margin-left: 1em;">
+                <input type="checkbox" name="example">
+                <label>Show password</label>
+            </div>
+        </div>
+
+        <div class="ui checkbox" id="forgotPwd" style="margin-top: 1em">
+            <input type="checkbox" name="example">
+            <label>Forgot password</label>
+        </div>
+
+        <div id="errorMsgDiv" class="ui hidden negative message">
+            <i class="close icon"></i>
+            <div id="errorMsg" class="header">
+
+            </div>
+
+        </div>
+
+        <div id="successMsgDiv" class="ui hidden success message">
+            <i class="close icon"></i>
+            <div id="successMsg" class="header">
+
+
+            </div>
+
+        </div>
+
+        <div style="margin-top: 1em;">
+            <button class="ui large primary button" type="button" onclick="changePassword()">
+                <i class="key icon"></i>
+                Change password
+            </button>
+        </div>
+
+        <div style="margin-top: 1em;">
+            <a href="/deleteAccount">
+                <button class="ui large red button" type="button">
+                    <i class="trash icon"></i>
+                    Delete account
+                </button>
+            </a>
+            
+        </div>
+
+        <div style="margin-top: 1em;">
+            <a href="/home">
+                <button class="ui large button" type="button">
+                    <i class="home icon"></i>
+                    Home Page
+                </button>
+            </a>
+
+            <a href="/signout">
+                <button id="testBtn" class="ui large labeled icon button">
+                    <i class="sign-out icon"></i>
+                    Sign out
+                </button>
+            </a>
+        </div>
+
+        <!-- <div style="margin-top: 1em; display: none;">
+            <input id="result" value="">
+        </div> -->
+
+
+
+
+        <script type="text/javascript">
+            var pwdForgot = false;
+
+            $('.message .close')
+                .on('click', function () {
+                    $(this)
+                        .closest('.message')
+                        .transition('fade')
+                        ;
+                })
+                ;
+
+            $('.ui.checkbox')
+                .checkbox()
+                ;
+
+            $("#showPwd").checkbox({
+                onChecked: function () {
+                    $("#old_password").prop("type", "text");
+                    $("#new_password").prop("type", "text");
+                },
+                onUnchecked: function () {
+                    $("#old_password").prop("type", "password");
+                    $("#new_password").prop("type", "password");
+                },
+            })
+
+            $("#forgotPwd").checkbox({
+                onChecked: function () {
+                    pwdForgot = true;
+                    $("#old_password_div").hide();
+                    $(".forgotPwdClass").show();
+                },
+                onUnchecked: function () {
+                    pwdForgot = false;
+                    $("#old_password_div").show();
+                    $(".forgotPwdClass").hide();
+                },
+            })
+
+            function changePassword() {
+
+                var old_password = $("#old_password").val().trim();
+                var new_password = $("#new_password").val().trim();
+
+                var answer_1 = $("#answer_1").val().trim();
+                var answer_2 = $("#answer_2").val().trim();
+
+                if (pwdForgot == false) {
+                    // Use new pwd and old pwd
+                    if (old_password == "") {
+                        $("#errorMsg").html("Old password cannot be blank");
+                        $('#errorMsgDiv').removeClass("hidden");
+                        return false;
+                    }
+
+                    if (new_password == "") {
+                        $("#errorMsg").html("New password cannot be blank");
+                        $('#errorMsgDiv').removeClass("hidden");
+                        return false;
+                    }
+
+                    $.ajax({
+                        type: 'POST',
+                        url: "/changePwd",
+                        contentType: 'application/json;charset=UTF-8',
+
+                        data: JSON.stringify({
+                            old_password: old_password,
+                            new_password: new_password
+                        }),
+
+                        success: function (response) {
+                            // var result = $("#result").val()
+                            if (response == "200") {
+                                $("#successMsg").html("Password updated");
+                                $('#successMsgDiv').removeClass("hidden");
+                            }
+                            else if (response == "201") {
+                                $("#errorMsg").html("The old password was incorrect");
+                                $('#errorMsgDiv').removeClass("hidden");
+                            }
+                            else {
+                                $("#errorMsg").html("Server error");
+                                $('#errorMsgDiv').removeClass("hidden");
+
+                                console.log("Exception = " + response)
+                            }
+                        },
+                        error: function (request, error) {
+                            console.log("Exception = " + JSON.stringify(error))
+                            //alert("Request: " + JSON.stringify(error));
+                        }
+                    });
+                }
+                else {
+                    //User has forgotten password
+                    //Verify identity using security questions
+                    if (answer_1 == "") {
+                        $("#errorMsg").html("Answer 1 cannot be blank");
+                        $('#errorMsgDiv').removeClass("hidden");
+                        return false;
+                    }
+
+                    if (answer_2 == "") {
+                        $("#errorMsg").html("Answer 2 cannot be blank");
+                        $('#errorMsgDiv').removeClass("hidden");
+                        return false;
+                    }
+
+                    if (new_password == "") {
+                        $("#errorMsg").html("New password cannot be blank");
+                        $('#errorMsgDiv').removeClass("hidden");
+                        return false;
+                    }
+
+                    $.ajax({
+                        type: 'POST',
+                        url: "/changePwd_Ans",
+                        contentType: 'application/json;charset=UTF-8',
+
+                        data: JSON.stringify({
+                            answer_1: answer_1,
+                            answer_2: answer_2,
+                            new_password: new_password
+                        }),
+
+                        success: function (response) {
+                            // var result = $("#result").val()
+                            if (response == "200") {
+                                $("#successMsg").html("Password updated");
+                                $('#successMsgDiv').removeClass("hidden");
+                            }
+                            else if (response == "201") {
+                                $("#errorMsg").html("The answers were incorrect");
+                                $('#errorMsgDiv').removeClass("hidden");
+                            }
+                            else if (response == "301") {
+                                $("#errorMsg").html("User not found");
+                                $('#errorMsgDiv').removeClass("hidden");
+                            }
+                            else {
+                                $("#errorMsg").html("Server error");
+                                $('#errorMsgDiv').removeClass("hidden");
+
+                                console.log("Exception = " + response)
+                            }
+                        },
+                        error: function (request, error) {
+                            console.log("Exception = " + JSON.stringify(error))
+                            //alert("Request: " + JSON.stringify(error));
+                        }
+                    });
+                }
+
+
+            }
+
+            function deleteAccount() {
+
+            }
+
+
+        </script>
+</body>
+
+</html>

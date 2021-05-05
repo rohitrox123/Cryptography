@@ -1,0 +1,387 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="apple-touch-icon" sizes="180x180"
+		href="/img/favicon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32"
+		href="/img/favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16"
+		href="/img/favicon/favicon-16x16.png">
+	<link rel="manifest" href="/img/favicon/site.webmanifest">
+
+	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/semantic.min.css">
+
+	<title>RC Crypto System</title>
+
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"
+		integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+	<script src="js/semantic.min.js"></script>
+
+</head>
+<style>
+
+</style>
+
+<body>
+	<div id="mainDiv" class="ui basic segment">
+		<div id="loader" class="ui inverted dimmer">
+			<div class="ui large text loader">Loading</div>
+		</div>
+
+		<div id="loginDiv">
+			<h1>Crypto Project</h1>
+			<!-- <a id="signOutBtn" href="#" onclick="signOut();" style="display: none;">Sign out</a> -->
+			<h3>by Rohit Singh</h3>
+
+
+
+			<!-- <div id="my-signin2"></div> -->
+
+			<!-- 
+			<div id="imgCard" class="ui card" style="display: block;">
+				<div class="image">
+					<img id="userImg" src="img/matthew.png">
+				</div>
+				<div class="content">
+					<span id="userCardName" class="header"></span>
+					
+				</div>
+				<div class="extra content">
+					<div>
+						<i class="envelope icon"></i>
+						<span id="userCardEmail"></span>
+					</div>
+				</div>
+			</div> -->
+
+			<form id="loginForm" action="/login" method="POST" enctype="multipart/form-data"
+				onsubmit="return validateLogin();">
+
+				<div>
+					<div class="ui large input">
+						<input type="text" placeholder="Username" id="username" name="username">
+					</div>
+				</div>
+				<div style="margin-top: 1em;">
+					<div class="ui large input">
+						<input type="password" placeholder="Password" id="password" name="password">
+					</div>
+				</div>
+
+				<div class="ui checkbox" id="showPwd" style="margin-top: 1em;">
+					<input type="checkbox" name="example">
+					<label>Show password</label>
+				</div>
+
+				<div id="errorMsgDiv" class="ui hidden negative message">
+					<i class="close icon"></i>
+					<div id="errorMsg" class="header">
+
+					</div>
+
+				</div>
+
+				<div id="successMsgDiv" class="ui hidden success message">
+					<i class="close icon"></i>
+					<div id="successMsg" class="header">
+
+
+					</div>
+
+				</div>
+
+				<div style="margin-top: 1em;">
+					<button class="ui large primary button" type="submit">Sign In</button>
+				</div>
+
+				<div style="margin-top: 1em; display: none;">
+					<input id="result" value="">
+				</div>
+
+			</form>
+
+			<div style="margin-top: 1em;">
+				<a href="/forgotPwdPage">
+					<button class="ui large orange button" type="button">Forgot password</button>
+				</a>
+			</div>
+
+			<div style="margin-top: 1em; font-size: medium;">
+				<p>Don't have an account yet? </p>
+			</div>
+			<div style="margin-top: 1em;">
+				<button class="ui large positive button" onclick="newAccountOpen()">Create Account</button>
+			</div>
+
+			<div style="margin-top: 1em; display: none;">
+				<input id="userData" val="[&#34;Bhati&#34;, &#34;Genesis&#34;, &#34;Ksprasad&#34;, &#34;Rongon&#34;, &#34;Xxx&#34;]">
+			</div>
+
+			<!-- <div style="margin-top: 1em;">
+				<button class="ui large orange button" onclick="test()">Test</button>
+			</div> -->
+
+		</div>
+
+		<div id="registerDiv" style="display: none;">
+			<h1>Create account</h1>
+			<form id="registerForm" action="/register" method="POST" enctype="multipart/form-data"
+				onsubmit="return validateAccount();">
+				<div>
+					<div id="newUserNameDiv" class="ui large input">
+						<input type="text" placeholder="Username" id="new_username" name="new_username"
+							title="Username already taken">
+					</div>
+				</div>
+
+				<div style="margin-top: 1em;">
+					<div class="ui large input">
+						<input type="password" placeholder="Password" id="new_password" name="new_password">
+					</div>
+				</div>
+
+				<div class="ui checkbox" id="showNewPwd" style="margin-top: 1em;">
+					<input type="checkbox" name="example">
+					<label>Show password</label>
+				</div>
+
+				<div style="margin-top: 1em;">
+					<h3>Security Questions</h3>
+
+					<div class="ui two column centered grid" style="padding-left: 5em;">
+						<div class="three wide column">
+							<div class="ui basic segment">
+								<div style="font-size: medium;">
+									<label>What was the name of your first pet?</label>
+								</div>
+								<div class="ui large input" style="margin-top: 1em">
+									<input type="text" placeholder="Your answer" id="answer_1" name="answer_1">
+								</div>
+							</div>
+						</div>
+						<div class="three wide column">
+							<div class="ui basic segment">
+								<div style="font-size: medium;">
+									<label>What was your mother's maiden name?</label>
+								</div>
+								<div class="ui large input" style="margin-top: 1em">
+									<input type="text" placeholder="Your answer" id="answer_2" name="answer_2">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div id="reg_errorMsgDiv" class="ui hidden negative message">
+					<i class="close icon"></i>
+					<div id="reg_errorMsg" class="header">
+
+					</div>
+
+				</div>
+
+				<div id="reg_successMsgDiv" class="ui hidden success message">
+					<i class="close icon"></i>
+					<div id="reg_successMsg" class="header">
+
+
+					</div>
+
+				</div>
+
+				<div style="margin-top: 1em;">
+					<button class="ui large positive button" type="submit">Submit</button>
+				</div>
+
+				<div style="margin-top: 1em;">
+					<p style="font-size: medium;">Already have an account?</p>
+					<a href="/">
+						<button class="ui large primary button" type="button">Back to sign in</button>
+					</a>
+				</div>
+
+			</form>
+
+		</div>
+
+
+	</div>
+
+
+	<script type="text/javascript">
+		var result = $("#result").val();
+
+		if (result == "201") {
+			$("#successMsg").html("You have been signed out");
+			$('#successMsgDiv').removeClass("hidden");
+		}
+
+		if (result == "202") {
+			$("#successMsg").html("Your account has been deleted");
+			$('#successMsgDiv').removeClass("hidden");
+		}
+
+		if (result == "300") {
+			$("#errorMsg").html("Incorrect username");
+			$('#errorMsgDiv').removeClass("hidden");
+		}
+
+		if (result == "301") {
+			$("#errorMsg").html("Incorrect password");
+			$('#errorMsgDiv').removeClass("hidden");
+		}
+
+		if (result == "500") {
+			$("#errorMsg").html("Msg from server: Username and password cannot be blank");
+			$('#errorMsgDiv').removeClass("hidden");
+		}
+
+		if (result == "501") {
+			$("#reg_errorMsg").html("Msg from server: Please fill in all the form data");
+			$('#reg_errorMsgDiv').removeClass("hidden");
+		}
+
+		if (result == "502") {
+			$("#reg_errorMsg").html("Msg from server: User already exists");
+			$('#reg_errorMsgDiv').removeClass("hidden");
+		}
+
+		var existingUsers = [];
+		$('.message .close')
+			.on('click', function () {
+				$(this)
+					.closest('.message')
+					.transition('fade')
+					;
+			})
+			;
+
+		$('.ui.checkbox')
+			.checkbox()
+			;
+
+		$("#showPwd").checkbox({
+			onChecked: function () {
+				$("#password").prop("type", "text");
+			},
+			onUnchecked: function () {
+				$("#password").prop("type", "password");
+			},
+		})
+
+		$("#showNewPwd").checkbox({
+			onChecked: function () {
+				$("#new_password").prop("type", "text");
+			},
+			onUnchecked: function () {
+				$("#new_password").prop("type", "password");
+			},
+		})
+
+		function validateLogin() {
+
+			var userName = $("#username").val().trim();
+			var password = $("#password").val().trim();
+
+			if (userName == "") {
+				$("#errorMsg").html("Username cannot be blank");
+				$('#errorMsgDiv').removeClass("hidden");
+				$("#loader").removeClass("active");
+				return false;
+			}
+
+			if (password == "") {
+				$("#errorMsg").html("Password cannot be blank");
+				$('#errorMsgDiv').removeClass("hidden");
+				$("#loader").removeClass("active");
+				return false;
+			}
+		}
+
+		function newAccountOpen() {
+			$("#loginDiv").hide();
+			$("#registerDiv").show();
+		}
+
+		function fetchUsers(data) {
+			console.log(data);
+			existingUsers = data;
+			// if(existingUsers.includes("Rongon")) {
+			// 	console.log("Username already exists!")
+			// }
+
+		}
+		fetchUsers(["Bhati", "Genesis", "Ksprasad", "Rongon", "Xxx"])
+
+		var userExists = false;
+
+		$('#new_username').on('input', function () {
+			var value = $(this).val().trim()
+			if (existingUsers.includes(value)) {
+				userExists = true;
+				$("#newUserNameDiv").addClass("error");
+				$("#new_username").prop("title", "User name already taken");
+			}
+			else {
+				userExists = false;
+				$("#newUserNameDiv").removeClass("error");
+				$("#new_username").prop("title", "User name available");
+			}
+		});
+
+		function validateAccount() {
+
+
+			var userName = $("#new_username").val().trim();
+			var password = $("#new_password").val().trim();
+			var answer_1 = $("#answer_1").val().trim();
+			var answer_2 = $("#answer_2").val().trim();
+
+			if (userExists == true) {
+				$("#reg_errorMsg").html("Username already exists");
+				$('#reg_errorMsgDiv').removeClass("hidden");
+				$("#loader").removeClass("active");
+				return false;
+			}
+
+			if (userName == "") {
+				$("#reg_errorMsg").html("Username cannot be blank");
+				$('#reg_errorMsgDiv').removeClass("hidden");
+				$("#loader").removeClass("active");
+				return false;
+			}
+
+			if (password == "") {
+				$("#reg_errorMsg").html("Password cannot be blank");
+				$('#reg_errorMsgDiv').removeClass("hidden");
+				$("#loader").removeClass("active");
+				return false;
+			}
+
+			if (answer_1 == "") {
+				$("#reg_errorMsg").html("Answer 1 cannot be blank");
+				$('#reg_errorMsgDiv').removeClass("hidden");
+				$("#loader").removeClass("active");
+				return false;
+			}
+
+			if (answer_2 == "") {
+				$("#reg_errorMsg").html("Answer 2 cannot be blank");
+				$('#reg_errorMsgDiv').removeClass("hidden");
+				$("#loader").removeClass("active");
+				return false;
+			}
+		}
+	</script>
+
+
+</body>
+
+</html>

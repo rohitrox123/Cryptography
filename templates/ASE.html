@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="/img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32"
+        href="/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16"
+        href="/img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/img/favicon/site.webmanifest">
+
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/semantic.min.css">
+
+    <title>RC Crypto System</title>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+    <script src="js/semantic.min.js"></script>
+
+</head>
+
+<body>
+    <div id="mainDiv">
+        <h2>
+            AES System
+        </h2>
+        <h3>
+            What would you like to do?
+        </h3>
+        <div class="ui selection dropdown" id="passwordLenDiv">
+            <input type="hidden" name="gender">
+            <i class="dropdown icon"></i>
+            <div class="default text">Password length</div>
+            <div class="menu">
+                <div class="item" data-value="6">6</div>
+                <div class="item" data-value="7">7</div>
+                <div class="item" data-value="8">8</div>
+                <div class="item" data-value="9">9</div>
+                <div class="item" data-value="10">10</div>
+                <div class="item" data-value="11">11</div>
+                <div class="item" data-value="12">12</div>
+                <div class="item" data-value="13">13</div>
+                <div class="item" data-value="14">14</div>
+                <div class="item" data-value="15">15</div>
+            </div>
+        </div>
+
+        <div>
+            <div class="ui large left action input">
+                <button class="ui large teal labeled icon button" onclick="generatePassword()">
+                    <i class="redo alternate icon"></i>
+                    Generate password
+                </button>
+                <input id="pwd" type="text">
+                <div class="ui checkbox" id="hidePwd">
+                    <input type="checkbox" name="example">
+                    <label>Hide password</label>
+                </div>
+            </div>
+        </div>
+
+        <div id=keyDiv>
+            <button id="keyBtn" class="ui large positive labeled icon button" disabled onclick="generateKeys()">
+                <i class="key alternate icon"></i>
+                Generate key
+            </button>
+
+            <!-- <button id="keyDownloadBtn" class="ui orange large labeled icon button" style="display: none;">
+                <i class="download icon"></i>
+                Download key
+            </button> -->
+
+        </div>
+
+        <div id="errorMsgDiv" class="ui hidden negative message">
+            <i class="close icon"></i>
+            <div id="errorMsg" class="header">
+                We're sorry we can't apply that discount
+            </div>
+            <!-- <p>That offer has expired
+            </p> -->
+        </div>
+
+        <div id="successMsgDiv" class="ui hidden success message">
+            <i class="close icon"></i>
+            <div id="successMsg" class="header">
+                Your user registration was successful.
+            </div>
+            <!-- <p>You may now log-in with the username you have chosen</p> -->
+        </div>
+
+        <form id="myForm" action="/aes" method="POST" enctype="multipart/form-data" onsubmit="return validateFiles()">
+            <div id="uploadDiv">
+                <label class="fileLabel">Select plaintext file</label>
+                <div class="ui input">
+
+                    <input type="file" name="inputFile" id="inputFile" placeholder="Select file">
+                </div>
+
+                <label class="fileLabel">Select key file</label>
+                <div class="ui input">
+                    <input type="file" name="keyFile" id="keyFile" placeholder="Select file">
+                </div>
+            </div>
+            <div id="encryptBtnDiv">
+                <button id="encryptBtn" type="submit" name="ops" value="encrypt"
+                    class="ui positive large labeled icon button">
+                    <i class="lock icon"></i>
+                    Encrypt
+                </button>
+            </div>
+            <div id="decryptBtnDiv">
+                <button id="decryptBtn" type="submit" name="ops" value="decrypt"
+                    class="ui orange large labeled icon button">
+                    <i class="lock open icon"></i>
+                    Decrypt
+                </button>
+            </div>
+        </form>
+        <div style="margin-top: 1em;">
+            <a href="/home">
+                <button class="ui large labeled icon button">
+                    <i class="home icon"></i>
+                    Home Page
+                </button>
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <script>
+        function generatePassword() {
+            var len = $("#passwordLenDiv").dropdown('get value');
+            if (len == null || len == undefined || len == "") {
+                len = 6;
+                $('#passwordLenDiv').dropdown('set selected', 6);
+            }
+            var result = [];
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for (var i = 0; i < len; i++) {
+                result.push(characters.charAt(Math.floor(Math.random() *
+                    charactersLength)));
+            }
+
+            $("#pwd").val(result.join(''));
+            $("#keyBtn").prop("disabled", false);
+
+        }
+
+        $('.ui.dropdown')
+            .dropdown()
+            ;
+
+        $('.ui.checkbox')
+            .checkbox()
+            ;
+
+        $("#hidePwd").checkbox({
+            onChecked: function () {
+                $("#pwd").prop("type", "password");
+            },
+            onUnchecked: function () {
+                $("#pwd").prop("type", "text");
+            },
+        })
+
+        $('.message .close')
+            .on('click', function () {
+                $(this)
+                    .closest('.message')
+                    .transition('fade')
+                    ;
+            })
+            ;
+
+        $('#pwd').on('input', function () {
+            var pwdVal = $(this).val().trim()
+            if (pwdVal.length > 0) {
+                $("#keyBtn").prop("disabled", false);
+            }
+            else {
+                $("#keyBtn").prop("disabled", true);
+            }
+        });
+
+        function generateKeys() {
+            var pwd = $("#pwd").val();
+            if (pwd.length < 6) {
+                $("#errorMsg").html("Password should be at least 6 characters long");
+                $('#errorMsgDiv').removeClass("hidden");
+                return false;
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: "/createKey/",
+                contentType: 'application/json;charset=UTF-8',
+
+                data: JSON.stringify({
+                    password: pwd
+                }),
+
+                success: function (response) {
+                    if (response == "200") {
+                        // Success
+                        console.log("Key creation successful!");
+                        //$("#keyDownloadBtn").show();
+                        window.open("https://www.pythonanywhere.com/user/rongonrc/files/home/rongonrc/mysite/static/AES_key")
+
+                    }
+                    else {
+                        console.log("Exception = " + response)
+                    }
+                },
+                error: function (request, error) {
+                    alert("Request: " + JSON.stringify(error));
+                }
+            });
+        }
+
+        function validateFiles() {
+            var inputFile = $("#inputFile").val();
+            var keyFile = $("#keyFile").val();
+            if (inputFile == "") {
+                $("#errorMsg").html("Input file not selected");
+                $('#errorMsgDiv').removeClass("hidden");
+                return false;
+            }
+            if (keyFile == "") {
+                $("#errorMsg").html("Key file not selected");
+                $('#errorMsgDiv').removeClass("hidden");
+                return false;
+            }
+        }
+
+    </script>
+</body>
+
+</html>

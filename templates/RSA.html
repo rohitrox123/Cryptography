@@ -1,0 +1,358 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="/img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32"
+        href="/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16"
+        href="/img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/img/favicon/site.webmanifest">
+
+    <!-- <link rel="stylesheet" href="css/home.css"> -->
+    <link rel="stylesheet" href="css/semantic.min.css">
+
+    <title>RC Crypto System</title>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+    <script src="js/semantic.min.js"></script>
+
+    <style>
+        #mainDiv {
+            margin: 0 auto;
+            margin-top: 2em;
+            text-align: center;
+        }
+
+        #keyDiv {
+            margin-top: 1em;
+        }
+
+        .ui.message {
+            margin: 0 auto !important;
+            text-align: center;
+            width: 25%;
+            margin-top: 1em !important;
+        }
+
+        #encryptControls {
+            margin-top: 1em;
+        }
+
+        #decryptControls {
+            margin-top: 1em;
+        }
+
+        .fileLabel {
+            margin-right: 1em;
+            font-size: medium;
+            font-weight: bold;
+            margin-left: 1em;
+        }
+
+        #encryptBtnDiv {
+            margin-top: 1em;
+        }
+
+        #decryptBtnDiv {
+            margin-top: 1em;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="mainDiv" class="ui basic segment">
+        <div id="loader" class="ui inverted dimmer">
+            <div class="ui large text loader">Loading</div>
+        </div>
+        <p></p>
+
+        <h2>
+            RSA System
+        </h2>
+        <h3>
+            What would you like to do?
+        </h3>
+
+        <div id=keyDiv>
+            <button id="keyBtn" class="ui large teal labeled icon button" onclick="generateKeys()">
+                <i class="key alternate icon"></i>
+                Generate keys
+            </button>
+
+        </div>
+
+        <div style="margin-top: 1em;">
+            <button id="pubkeyDownloadBtn" class="ui orange large labeled icon disabled button"
+                onclick="downloadPubKey()">
+                <i class="download icon"></i>
+                Download public key
+            </button>
+            <button id="pvtkeyDownloadBtn" class="ui orange large labeled icon disabled button"
+                onclick="downloadPvtKey()">
+                <i class="download icon"></i>
+                Download private key
+            </button>
+            <button id="symkeyDownloadBtn" class="ui orange large labeled icon disabled button"
+                onclick="downloadSymKey()">
+                <i class="download icon"></i>
+                Download symmetric key
+            </button>
+        </div>
+
+        <div id="opSelector" class="ui toggle checkbox" style="margin-top: 1em;">
+            <input type="checkbox" name="operation">
+            <label id="opTxt">Decrypt</label>
+        </div>
+
+        <div id="errorMsgDiv" class="ui hidden negative message">
+            <i class="close icon"></i>
+            <div id="errorMsg" class="header">
+
+            </div>
+
+        </div>
+
+        <div id="successMsgDiv" class="ui hidden success message">
+            <i class="close icon"></i>
+            <div id="successMsg" class="header">
+                Your user registration was successful.
+            </div>
+
+        </div>
+
+        <form id="myForm" action="/rsa" method="POST" enctype="multipart/form-data" onsubmit="return validateFiles()">
+            <div id="encryptControls">
+                <label class="fileLabel">Select plaintext file</label>
+                <div class="ui input">
+
+                    <input type="file" name="inputFile" id="inputFile" placeholder="Select file">
+                </div>
+
+                <label class="fileLabel">Select symmetric key file</label>
+                <div class="ui input">
+                    <input type="file" name="symKeyFile" id="symKeyFile" placeholder="Select file">
+                </div>
+
+                <div style="margin-top: 1em;">
+                    <label class="fileLabel">Select public key file</label>
+                    <div class="ui input">
+                        <input type="file" name="pubKeyFile" id="pubKeyFile" placeholder="Select file">
+                    </div>
+                </div>
+            </div>
+
+            <div id="decryptControls" style="display: none;">
+                <label class="fileLabel">Select encrypted file</label>
+                <div class="ui input">
+
+                    <input type="file" name="encInputFile" id="encInputFile" placeholder="Select file">
+                </div>
+
+                <label class="fileLabel">Select private key file</label>
+                <div class="ui input">
+                    <input type="file" name="pvtKeyFile" id="pvtKeyFile" placeholder="Select file">
+                </div>
+
+                <div style="margin-top: 1em;">
+                    <label class="fileLabel">Select encrypted key file</label>
+                    <div class="ui input">
+                        <input type="file" name="encKeyFile" id="encKeyFile" placeholder="Select file">
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="encryptBtnDiv">
+                <button id="encryptBtn" type="submit" name="ops" value="encrypt"
+                    class="ui positive large labeled icon button">
+                    <i class="lock icon"></i>
+                    Encrypt
+                </button>
+            </div>
+            <div id="decryptBtnDiv" style="display: none;">
+                <button id="decryptBtn" type="submit" name="ops" value="decrypt"
+                    class="ui orange large labeled icon button">
+                    <i class="lock open icon"></i>
+                    Decrypt
+                </button>
+            </div>
+            <!-- <div style="margin-top: 1em;">
+                <a href="/test">
+                    <button type="button" class="ui orange large labeled icon button">
+                        <i class="lock open icon"></i>
+                        Test
+                    </button>
+                </a>
+                
+            </div> -->
+        </form>
+        <div style="margin-top: 1em;">
+            <a href="/home">
+                <button class="ui large labeled icon button">
+                    <i class="home icon"></i>
+                    Home Page
+                </button>
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        $('.ui.dropdown')
+            .dropdown()
+            ;
+
+        $('.ui.checkbox')
+            .checkbox()
+            ;
+
+        $("#hidePwd").checkbox({
+            onChecked: function () {
+                $("#pwd").prop("type", "password");
+            },
+            onUnchecked: function () {
+                $("#pwd").prop("type", "text");
+            },
+        })
+
+        $("#opSelector").checkbox({
+            onChecked: function () {
+                $("#opTxt").html("Encrypt");
+                $("#encryptBtnDiv").hide();
+                $("#decryptBtnDiv").show();
+                $("#decryptControls").show();
+                $("#encryptControls").hide();
+
+
+            },
+            onUnchecked: function () {
+                $("#opTxt").html("Decrypt");
+                $("#encryptBtnDiv").show();
+                $("#decryptBtnDiv").hide();
+                $("#decryptControls").hide();
+                $("#encryptControls").show();
+            },
+        })
+
+
+        $('.message .close')
+            .on('click', function () {
+                $(this)
+                    .closest('.message')
+                    .transition('fade')
+                    ;
+            })
+            ;
+
+        function generateKeys() {
+
+            $("#loader").addClass("active");
+
+            $.ajax({
+                type: 'GET',
+                url: "/createRSAKey/",
+                async: true,
+
+                success: function (response) {
+                    if (response == "200") {
+                        // Success
+                        $("#errorMsg").html("Exception encountered");
+                        $('#errorMsgDiv').addClass("hidden");
+                        console.log("Key creation successful!");
+                        $("#pubkeyDownloadBtn").removeClass("disabled");
+                        $("#pvtkeyDownloadBtn").removeClass("disabled");
+                        $("#symkeyDownloadBtn").removeClass("disabled");
+                        $("#loader").removeClass("active");
+                        // window.open("AES_key")
+
+                    }
+                    else {
+                        $("#loader").removeClass("active");
+                        console.log("Exception = " + response)
+                        $("#errorMsg").html("Exception encountered");
+                        $('#errorMsgDiv').removeClass("hidden");
+                    }
+                },
+                error: function (request, error) {
+                    alert("Request: " + JSON.stringify(error));
+                }
+            });
+        }
+
+        function validateFiles() {
+            var inputFile = $("#inputFile").val();
+            var symKeyFile = $("#symKeyFile").val();
+            var pubKeyFile = $("#pubKeyFile").val();
+
+            var encInputFile = $("#encInputFile").val(); //Encrypted msg file
+            var pvtKeyFile = $("#pvtKeyFile").val(); //Private key
+            var encKeyFile = $("#encKeyFile").val(); //Symmetric key encrypted using public key
+
+            var selOp = $("#opSelector").checkbox("is checked");
+
+            if (selOp == false) {
+                //Encrypt
+                if (inputFile == "") {
+                    $("#errorMsg").html("Input file not selected");
+                    $('#errorMsgDiv').removeClass("hidden");
+                    return false;
+                }
+                if (symKeyFile == "") {
+                    $("#errorMsg").html("Key file not selected");
+                    $('#errorMsgDiv').removeClass("hidden");
+                    return false;
+                }
+                if (pubKeyFile == "") {
+                    $("#errorMsg").html("Public key file not selected");
+                    $('#errorMsgDiv').removeClass("hidden");
+                    return false;
+                }
+            }
+            else if (selOp == true) {
+                //Decrypt
+                if (encInputFile == "") {
+                    $("#errorMsg").html("Encrypted file not selected");
+                    $('#errorMsgDiv').removeClass("hidden");
+                    return false;
+                }
+                if (pvtKeyFile == "") {
+                    $("#errorMsg").html("Private key file not selected");
+                    $('#errorMsgDiv').removeClass("hidden");
+                    return false;
+                }
+                if (encKeyFile == "") {
+                    $("#errorMsg").html("Encrypted key file not selected");
+                    $('#errorMsgDiv').removeClass("hidden");
+                    return false;
+                }
+            }
+        }
+
+        function downloadPubKey() {
+            window.open("https://www.pythonanywhere.com/user/rongonrc/files/home/rongonrc/mysite/static/rsa/keys/public_key.key")
+        }
+
+        function downloadPvtKey() {
+            window.open("https://www.pythonanywhere.com/user/rongonrc/files/home/rongonrc/mysite/static/rsa/keys/private_key.key")
+        }
+
+        function downloadSymKey() {
+            window.open("https://www.pythonanywhere.com/user/rongonrc/files/home/rongonrc/mysite/static/rsa/keys/symmetric.key")
+        }
+
+    </script>
+</body>
+
+</html>

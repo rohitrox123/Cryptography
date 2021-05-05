@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="/img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32"
+        href="/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16"
+        href="/img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/img/favicon/site.webmanifest">
+
+    <!-- <link rel="stylesheet" href="css/home.css"> -->
+    <link rel="stylesheet" href="css/semantic.min.css">
+
+    <title>RC Crypto System</title>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+    <script src="js/semantic.min.js"></script>
+
+    <style>
+        #mainDiv {
+            margin: 0 auto;
+            margin-top: 2em;
+            text-align: center;
+        }
+
+        .ui.message {
+            margin: 0 auto !important;
+            text-align: center;
+            width: 25%;
+            margin-top: 1em !important;
+        }
+
+        #inputFileControls {
+            margin-top: 1em;
+        }
+
+        #decryptControls {
+            margin-top: 1em;
+        }
+
+        .fileLabel {
+            margin-right: 1em;
+            font-size: medium;
+            font-weight: bold;
+            margin-left: 1em;
+        }
+
+        #compareBtnDiv {
+            margin-top: 1em;
+        }
+
+        #decryptBtnDiv {
+            margin-top: 1em;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="mainDiv" class="ui basic segment">
+        <div id="loader" class="ui inverted dimmer">
+            <div class="ui large text loader">Loading</div>
+        </div>
+        <p></p>
+
+        <h2>
+            Compare file hashes
+        </h2>
+        <h3>
+            Upload two files to compare
+        </h3>
+
+
+        <div id="errorMsgDiv" class="ui hidden negative message">
+            <i class="close icon"></i>
+            <div id="errorMsg" class="header">
+
+            </div>
+
+        </div>
+
+        <div id="successMsgDiv" class="ui hidden success message">
+            <i class="close icon"></i>
+            <div id="successMsg" class="header">
+                Your user registration was successful.
+            </div>
+
+        </div>
+
+        <form id="myForm" action="/computeHash" method="POST" enctype="multipart/form-data"
+            onsubmit="return validateFiles()">
+            <div id="inputFileControls">
+                <label class="fileLabel">Select file 1</label>
+                <div class="ui input">
+                    <input type="file" name="file1" id="file1" placeholder="Select file">
+                </div>
+
+                <label class="fileLabel">Select file 2</label>
+                <div class="ui input">
+                    <input type="file" name="file2" id="file2" placeholder="Select file">
+                </div>
+            </div>
+
+            <div id="compareBtnDiv">
+                <button id="encryptBtn" type="submit" name="ops" value="encrypt"
+                    class="ui positive large labeled icon button">
+                    <i class="lock icon"></i>
+                    Compare files
+                </button>
+            </div>
+
+            <div style="margin-top: 1em; display: none;">
+                <input id="result" value="Done">
+            </div>
+
+        </form>
+        <div style="margin-top: 1em;">
+            <a href="/home">
+                <button class="ui large labeled icon button">
+                    <i class="home icon"></i>
+                    Home Page
+                </button>
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        $('.ui.dropdown')
+            .dropdown()
+            ;
+
+        $('.ui.checkbox')
+            .checkbox()
+            ;
+
+        $('.message .close')
+            .on('click', function () {
+                $(this)
+                    .closest('.message')
+                    .transition('fade')
+                    ;
+            })
+            ;
+
+        function validateFiles() {
+            var file1 = $("#file1").val();
+            var file2 = $("#file2").val();
+
+            if (file1 == "") {
+                $("#errorMsg").html("Please select file 1");
+                $('#errorMsgDiv').removeClass("hidden");
+                return false;
+            }
+            if (file2 == "") {
+                $("#errorMsg").html("Please select file 2");
+                $('#errorMsgDiv').removeClass("hidden");
+                return false;
+            }
+        }
+
+        function downloadPubKey() {
+            window.open("rsa/keys/public_key.key")
+        }
+
+        function downloadPvtKey() {
+            window.open("rsa/keys/private_key.key")
+        }
+
+        function downloadSymKey() {
+            window.open("rsa/keys/symmetric.key")
+        }
+
+        if($("#result").val() == "200") {
+            $("#errorMsg").html("");
+            $('#errorMsgDiv').addClass("hidden");
+
+            $("#successMsg").html("Files are same");
+            $('#successMsgDiv').removeClass("hidden");
+        }
+        else if($("#result").val() == "300"){
+            $("#successMsg").html("");
+            $('#successMsgDiv').addClass("hidden");
+
+            $("#errorMsg").html("Files are different");
+            $('#errorMsgDiv').removeClass("hidden");
+        }
+
+    </script>
+</body>
+
+</html>
