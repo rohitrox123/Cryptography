@@ -1,0 +1,13 @@
+gunicorn
+blinker
+click
+dnspython
+Flask
+Flask-Mail
+itsdangerous
+Jinja2
+MarkupSafe
+pymongo
+python-http-client
+shortuuid
+Werkzeug
